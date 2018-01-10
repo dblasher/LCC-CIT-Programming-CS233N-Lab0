@@ -16,7 +16,7 @@ namespace TicTacToe
         {
             InitializeComponent();
         }
-
+        //this is a test comment to check git
         const string USER_SYMBOL = "X";
         const string COMPUTER_SYMBOL = "O";
         const string EMPTY = "";
