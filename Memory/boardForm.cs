@@ -91,6 +91,7 @@ namespace Memory
         // TODO:  students should write this one
         private void ShuffleCards()
         {
+            //we'll write this together in class 1/16
         }
 
         // This method loads (shows) an image in a picture box.  Assumes that filenames
@@ -112,7 +113,7 @@ namespace Memory
         // shows (loads) the backs of all of the cards
         private void LoadAllCardBacks()
         {
-
+            //loop calling LoadCardBack
         }
 
         // Hides a picture box
@@ -224,3 +225,18 @@ namespace Memory
         #endregion
     }
 }
+/*
+ * NewGame(){
+  1 shuffle deck
+ assign pictureBox0 a random card back (do face first to check if working), repeat for all picture boxes
+ 
+    after writing form load test show all cards
+
+    then switch the shuffle deck to show card back on form load
+   2  work on making the card clickable, causing show card to run and storing that card number to first_card_number instance variable
+    disable the first card
+   3 start the Flip timer event handler
+
+    next card clicked showed be saved to second_card_number
+
+ */
