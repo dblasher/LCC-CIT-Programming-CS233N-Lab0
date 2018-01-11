@@ -68,10 +68,16 @@ namespace Memory
         // TODO:  students should write this one
         private bool IsMatch(int index1, int index2)
         {
-            return true;
+            if (GetCard(index1).Tag == GetCard(index2).Tag) {
+                //why double equal and not triple? I forget the difference
+                return true;
+            }
+            else { return false; }
         }
 
         // This method fills each picture box with a filename
+        //this should also have a ceiling for i, otherwise we could end up trying to run SetCardFilename()
+        //on a picture box that doesn't exist. Or use try{} catch{}
         private void FillCardFilenames()
         {
             string[] values = { "a", "2", "j", "q", "k" };
@@ -113,6 +119,12 @@ namespace Memory
         // shows (loads) the backs of all of the cards
         private void LoadAllCardBacks()
         {
+            for (int i =1; i <= 20; i++)
+            {
+                LoadCard(i);
+                //disable comment below when we know ShuffleCards() and LoadAllCardbacks() are working correctly
+                //LoadCardBack(i);
+            }
             //loop calling LoadCardBack
         }
 
@@ -169,6 +181,9 @@ namespace Memory
         #region EventHandlers
         private void boardForm_Load(object sender, EventArgs e)
         {
+            FillCardFilenames();
+            LoadAllCardBacks();
+            
             /* 
              * Fill the picture boxes with filenames
              * Shuffle the cards
