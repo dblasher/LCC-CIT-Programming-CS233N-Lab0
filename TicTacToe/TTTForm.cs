@@ -34,6 +34,12 @@ namespace TicTacToe
         const int COLUMN = 2;
         const int DIAGONAL = 3;
 
+        //                            [[[0,0],[0,1],[0,2], [0,3],[0,4]], 
+        //                            [[[1,0],[1,1],[1,2], [1,3],[1,4]],
+        //                            [[[2,0],[2,1],[2,2], [2,3],[2,4]],
+        //                            [[[3,0],[3,1],[3,2], [3,3],[3,4]],
+        //                            [[[4,0],[4,1],[4,2], [4,3],[4,4]],
+
         // This method takes a row and column as parameters and 
         // returns a reference to a label on the form in that position
         private Label GetSquare(int row, int column)
@@ -71,21 +77,51 @@ namespace TicTacToe
         //* TODO:  finish all of these that return true
         private bool IsAnyRowWinner()
         {
-            return true;
+            for (int row = 0; row < SIZE; row++)
+            {
+                if (IsRowWinner(i))
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
         private bool IsColumnWinner(int col)
-        {
+        { 
+           Label square = GetSquare(0,col);
+           string symbol = square.Text;
+           for (int row = 1; row<SIZE; row++)
+            {
+                square = GetSquare(row, col);
+                if (symbol == EMPTY || square.Text != symbol)
+                    return false;
+            }
             return true;
         }
-
+            
         private bool IsAnyColumnWinner()
-        {
-            return true;
-        }
+            {
+                for (int col = 0; col < SIZE; col++)
+                {
+                    if (IsColumnWinner(col))
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }
 
-        private bool IsDiagonal1Winner()
+            private bool IsDiagonal1Winner()
         {
+            Label square = GetSquare(0,0);
+            string symbol = square.Text;
+            for (int row = 1, col = 1; row < SIZE; row++, col++)
+            {
+                square = GetSquare(row, col);
+                if (symbol == EMPTY || square.Text != symbol)
+                    return false;
+            }
             return true;
         }
 
@@ -104,12 +140,32 @@ namespace TicTacToe
 
         private bool IsAnyDiagonalWinner()
         {
-            return true;
+            if (IsDiagonal1Winner())
+            {
+                return true;
+                //highlightDiagonal1();
+            }
+            if (IsDiagonal2Winner())
+            {
+                return true;
+                //highlightDiagonal2();
+            }
         }
 
         private bool IsFull()
         {
-            return true;
+            Label square = GetSquare(0, 0);
+            if (square.Text != EMPTY)
+            {
+                for (int row = 0; row < SIZE; row++)
+                {
+
+                }
+            }
+            else
+            {
+                return false;
+            }
         }
 
         // This method determines if any row, column or diagonal on the board is a winner.
