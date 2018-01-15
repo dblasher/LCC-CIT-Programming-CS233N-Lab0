@@ -112,7 +112,7 @@ namespace Memory
         private void LoadCardBack(int i)
         {
             PictureBox card = GetCard(i);
-            card.Image = Image.FromFile(System.Environment.CurrentDirectory + "\\Cards\\black_back.jpg");
+            card.Image = Image.FromFile(System.Environment.CurrentDirectory + "\\Cards\\CardBack.jpg");
         }
 
         // TODO:  students should write all of these
