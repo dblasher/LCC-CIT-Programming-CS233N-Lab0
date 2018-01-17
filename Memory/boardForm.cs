@@ -97,7 +97,31 @@ namespace Memory
         // TODO:  students should write this one
         private void ShuffleCards()
         {
+            Random rnd = new Random();
+            //string[] deck = {"cardac.jpg","cardad.jpg", "cardah.jpg", "cardas.jpg", "card2c.jpg", "card2d.jpg", "card2h.jpg", "card2s.jpg", "cardjc.jpg", "cardjd.jpg",
+            // "cardjh.jpg","cardjs.jpg","cardqc.jpg","cardqd.jpg","cardqh.jpg","cardqs.jpg","cardkc.jpg","cardkd.jpg","cardkh.jpg","cardks.jpg"};
+            
+            for (int cardNum=1;cardNum<=20; cardNum++)
+            {
+                int randomNum = rnd.Next(1, 21);
+                string temp = GetCardFilename(cardNum);
+                string tempRandom = GetCardFilename(randomNum);
+                SetCardFilename(cardNum, tempRandom);
+                SetCardFilename(randomNum, temp); 
+            }
+
             //we'll write this together in class 1/16
+            /*my thinking:
+             * create array, deck, holding all possible card file names, should have 20 entries like ["cardac.jpg","cardak.jpg",...]
+             * create random number object
+             * create new queue, either local or global, called shuffledDeck
+             * pop an entry from the array at random.Next(0,deck.count()) and add it to shuffleDeck
+             * loop through this process until deck.count()==0
+             * shuffleDeck should have a queue of 20 strings in random order
+             * set each card.Tag=an item in the queue
+             * 
+             * OR, 
+             */
         }
 
         // This method loads (shows) an image in a picture box.  Assumes that filenames
@@ -182,6 +206,7 @@ namespace Memory
         private void boardForm_Load(object sender, EventArgs e)
         {
             FillCardFilenames();
+            ShuffleCards();
             LoadAllCardBacks();
             
             /* 
