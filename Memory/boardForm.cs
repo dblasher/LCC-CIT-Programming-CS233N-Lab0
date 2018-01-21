@@ -66,9 +66,10 @@ namespace Memory
         }
 
         // TODO:  students should write this one
+        //this needs to check that the values of index1 and index2 are the same. "a" == "a" means they're both aces.
         private bool IsMatch(int index1, int index2)
         {
-            if (GetCard(index1).Tag == GetCard(index2).Tag) {
+            if (GetCardValue(index1)==GetCardValue(index2)) {
                 //why double equal and not triple? I forget the difference
                 return true;
             }
@@ -98,9 +99,7 @@ namespace Memory
         private void ShuffleCards()
         {
             Random rnd = new Random();
-            //string[] deck = {"cardac.jpg","cardad.jpg", "cardah.jpg", "cardas.jpg", "card2c.jpg", "card2d.jpg", "card2h.jpg", "card2s.jpg", "cardjc.jpg", "cardjd.jpg",
-            // "cardjh.jpg","cardjs.jpg","cardqc.jpg","cardqd.jpg","cardqh.jpg","cardqs.jpg","cardkc.jpg","cardkd.jpg","cardkh.jpg","cardks.jpg"};
-            
+          
             for (int cardNum=1;cardNum<=20; cardNum++)
             {
                 int randomNum = rnd.Next(1, 21);
@@ -136,7 +135,7 @@ namespace Memory
         private void LoadCardBack(int i)
         {
             PictureBox card = GetCard(i);
-            card.Image = Image.FromFile(System.Environment.CurrentDirectory + "\\Cards\\CardBack.jpg");
+            card.Image = Image.FromFile(System.Environment.CurrentDirectory + "\\Cards\\black_back.jpg");
         }
 
         // TODO:  students should write all of these
@@ -144,10 +143,10 @@ namespace Memory
         private void LoadAllCardBacks()
         {
             for (int i =1; i <= 20; i++)
-            {
-                LoadCard(i);
+            {          
+                //LoadCard(i);
                 //disable comment below when we know ShuffleCards() and LoadAllCardbacks() are working correctly
-                //LoadCardBack(i);
+                LoadCardBack(i);
             }
             //loop calling LoadCardBack
         }
@@ -155,74 +154,119 @@ namespace Memory
         // Hides a picture box
         private void HideCard(int i)
         {
-
+            LoadCardBack(i);
         }
 
         private void HideAllCards()
         {
-
+            for (int card = 1; card <= 20; card++)
+            {
+                LoadCardBack(card);
+            }
         }
 
         // shows a picture box
         private void ShowCard(int i)
         {
-
+            LoadCard(i);
         }
 
         private void ShowAllCards()
         {
-
+            for (int card = 1; card <= 20; card++)
+            {
+                LoadCard(card);
+            }
         }
 
         // disables a picture box
         private void DisableCard(int i)
         {
-
+            GetCard(i).Click-= new System.EventHandler(this.card_Click);
+            /*
+             * private void DisableSquare(Label square)       
+            *square.Click -= new System.EventHandler(this.label_Click);     
+             */
         }
 
         private void DisableAllCards()
         {
-
+            for (int card = 1; card <= 20; card++)
+            {
+                DisableCard(card);
+            }
         }
 
         private void EnableCard(int i)
         {
-
+            GetCard(i).Click += new System.EventHandler(this.card_Click);
         }
 
         private void EnableAllCards()
         {
-
+            for (int card = 1; card <= 20; card++)
+            {
+                EnableCard(card);
+            }
         }
-    
+        
         private void EnableAllVisibleCards()
         {
-
+            //if the card's Image property isn't equal to its Tag then enable it. The Tag holds the front of the card's filename
+            for(int card = 1; card <= 20; card++)
+            {
+                if (GetCard(card).Image != GetCard(card).Tag)
+                {
+                    EnableCard(card);
+                }              
+            }
         }
 
+        private void NewGame()
+        {
+            ShuffleCards();
+            LoadAllCardBacks();
+            EnableAllCards();
+            matches = 0;
+            resultLabel.Hide();
+            resultLabel.Text = "Match";
+        }
         #endregion
 
         #region EventHandlers
         private void boardForm_Load(object sender, EventArgs e)
         {
+            resultLabel.Hide();
+            // assign each card a file name, card1.Tag="cardac.jpg" for example
             FillCardFilenames();
+
+            //randomly swaps all card tags, card1.Tag=card17.Tag, card2.Tag=card12.Tag, etc.
             ShuffleCards();
+            
+            //sets all card image properties to black_back.jpg, we can still get the front of the card from the Tag property
             LoadAllCardBacks();
             
-            /* 
-             * Fill the picture boxes with filenames
-             * Shuffle the cards
-             * Load all of the card backs - 
-             *      While you're testing you might want to load all of card faces
-             *      to make sure that the cards are loaded successfully and that
-             *      they're shuffled.  If you get all 2s, something is wrong.
-            */
+          
         }
 
         private void card_Click(object sender, EventArgs e)
         {
             PictureBox card = (PictureBox)sender;
             int cardNumber = int.Parse(card.Name.Substring(4));
+            resultLabel.Hide();
+            if (firstCardNumber == NOT_PICKED_YET)
+            {
+                firstCardNumber = cardNumber;
+                LoadCard(firstCardNumber);
+                DisableCard(firstCardNumber);
+            }
+            else
+            {
+                secondCardNumber = cardNumber;
+                LoadCard(secondCardNumber);
+                DisableAllCards();
+                flipTimer.Start();
+            }
 
             /* 
              * if the first card isn't picked yet
@@ -240,14 +284,42 @@ namespace Memory
 
         private void flipTimer_Tick(object sender, EventArgs e)
         {
+            flipTimer.Stop();
+
+            //if we have a match
+            if (IsMatch(firstCardNumber, secondCardNumber))
+            {
+                resultLabel.Show();
+                matches += 1;
+                firstCardNumber = NOT_PICKED_YET;
+                secondCardNumber = NOT_PICKED_YET;
+                if (matches == 10)
+                {
+                    resultLabel.Text = "You Win!";
+                }
+                else
+                {
+                    EnableAllVisibleCards();
+                }
+            }
+
+            //if they dont match
+            else
+            {
+                HideCard(firstCardNumber);
+                HideCard(secondCardNumber);
+                firstCardNumber = NOT_PICKED_YET;
+                secondCardNumber = NOT_PICKED_YET;
+                EnableAllVisibleCards();
+            }
             /*
              * stop the flip timer
-             * if the first card and second card are a match
-             *      increment the number of matches
-             *      hide the first card
-             *      hide the second card
-             *      reset the first card number
-             *      reset the second card number
+             * -if the first card and second card are a match
+             *      -increment the number of matches
+             *      ? hide the first card
+             *      ? hide the second card
+             *      -reset the first card number
+             *      -reset the second card number
              *      if the number of matches is 10
              *          show a message box
              *      else
@@ -262,7 +334,18 @@ namespace Memory
              * end if
              */
         }
+
         #endregion
+
+        private void newGameButton_Click(object sender, EventArgs e)
+        {
+            NewGame();
+        }
+
+        private void exitButton_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
     }
 }
 /*
@@ -279,4 +362,6 @@ namespace Memory
 
     next card clicked showed be saved to second_card_number
 
+     //string[] deck = {"cardac.jpg","cardad.jpg", "cardah.jpg", "cardas.jpg", "card2c.jpg", "card2d.jpg", "card2h.jpg", "card2s.jpg", "cardjc.jpg", "cardjd.jpg",
+            // "cardjh.jpg","cardjs.jpg","cardqc.jpg","cardqd.jpg","cardqh.jpg","cardqs.jpg","cardkc.jpg","cardkd.jpg","cardkh.jpg","cardks.jpg"};
  */
