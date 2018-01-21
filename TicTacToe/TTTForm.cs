@@ -325,7 +325,7 @@ namespace TicTacToe
                     int row = rnd.Next(0, SIZE);
                     int col = rnd.Next(0, SIZE);
                     selection = GetSquare(row, col);
-                } while (selection.Text!=EMPTY);                                     
+                } while (selection.Text!="");                                     
                 selection.Text = COMPUTER_SYMBOL;
                 DisableSquare(selection);                               
             }
@@ -399,6 +399,7 @@ namespace TicTacToe
 
         private void newGameButton_Click(object sender, EventArgs e)
         {
+            DisableAllSquares();
             ResetSquares();
             resultLabel.Text = EMPTY;
         }
